@@ -1,0 +1,29 @@
+ASs:
+    111:
+        loopback_space: "2001:1:1:1/64"
+        igp: "ospf"
+        routers:
+            "1.1.1.1":
+                border: yes
+                interfaces:
+                    - "2.2.2.2"
+                    - "4.4.4.4"
+                    
+            "2.2.2.2":
+                border: no
+                interfaces:
+                    - "1.1.1.1"
+                    - "3.3.3.3"
+
+            "3.3.3.3":
+                border: no
+                interfaces:
+                    - "1.1.1.1"
+                    - "4.4.4.4"
+
+            "4.4.4.4":
+                border: no
+                interfaces:
+                    - "1.1.1.1"
+                    - "3.3.3.3"
+            
