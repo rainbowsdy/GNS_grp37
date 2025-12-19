@@ -1,3 +1,2 @@
 jinja2
-data
 PyYAML==6.0.3

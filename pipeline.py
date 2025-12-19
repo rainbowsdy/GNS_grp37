@@ -1,5 +1,7 @@
 import yaml
 import ipaddress
+from src.ecriture import ecriture_config
+from src.class_to_dict import convert_as_to_dict_list
 from src.models import AS, Router, IGP
 
 # First step of the pipeline : read and serialize yaml config
@@ -39,4 +41,11 @@ def read_config(file_path):
 
 
 if __name__ == "__main__":
+    
+    # Lecture du YAML
+    ass_dict = read_config("templates/example.yaml")
     print(read_config("templates/example.yaml"))
+    as_list = list(ass_dict.values())
+    # Conversion en liste de dicts pour Jinja2
+    routers_for_template = convert_as_to_dict_list(as_list)
+    ecriture_config(routers_for_template)
