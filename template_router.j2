@@ -1,0 +1,131 @@
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+!
+hostname {{ hostname }}
+!
+boot-start-marker
+boot-end-marker
+!
+no aaa new-model
+no ip icmp rate-limit unreachable
+ip cef
+!
+no ip domain lookup
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+ip tcp synwait-time 5
+!
+
+{# ================= INTERFACES ================= #}
+{% for iface in interfaces %}
+interface {{ iface.name }}
+ {% if iface.shutdown %}
+ shutdown
+ {% else %}
+ no shutdown
+ {% endif %}
+
+ {% if iface.duplex is defined %}
+ duplex {{ iface.duplex }}
+ {% endif %}
+ {% if iface.speed is defined %}
+ speed {{ iface.speed }}
+ {% endif %}
+ {% if iface.media_type is defined %}
+ media-type {{ iface.media_type }}
+ {% endif %}
+ {% if iface.negotiation is defined %}
+ negotiation {{ iface.negotiation }}
+ {% endif %}
+
+ {% for addr in iface.ipv6_addresses %}
+ ipv6 address {{ addr }}
+ {% endfor %}
+
+ {% if iface.ipv6_enable %}
+ ipv6 enable
+ {% endif %}
+
+ {# ---------- OSPF ---------- #}
+ {% if ospf is defined and iface.ospf_area is defined %}
+ ipv6 ospf {{ ospf.process_id }} area {{ iface.ospf_area }}
+ {% endif %}
+
+ {# ---------- RIP ---------- #}
+ {% if rip is defined and iface.rip_enable %}
+ ipv6 rip {{ rip.process_name }} enable
+ {% endif %}
+!
+{% endfor %}
+
+{# ================= BGP ================= #}
+{% if bgp is defined %}
+router bgp {{ bgp.as }}
+ bgp router-id {{ bgp.router_id }}
+ bgp log-neighbor-changes
+ no bgp default ipv4-unicast
+ {% for n in bgp.neighbors %}
+ neighbor {{ n.address }} remote-as {{ n.remote_as }}
+ {% endfor %}
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+  {% for net in bgp.networks %}
+  network {{ net }}
+  {% endfor %}
+  {% for n in bgp.neighbors %}
+  neighbor {{ n.address }} activate
+  {% endfor %}
+ exit-address-family
+!
+{% endif %}
+
+{# ================= OSPF ================= #}
+{% if ospf is defined %}
+{% if ospf.ipv6 %}
+ipv6 router ospf {{ ospf.process_id }}
+ router-id {{ ospf.router_id }}
+{% else %}
+router ospf {{ ospf.process_id }}
+ router-id {{ ospf.router_id }}
+{% endif %}
+!
+{% endif %}
+
+{# ================= RIP ================= #}
+{% if rip is defined %}
+ipv6 router rip {{ rip.process_name }}
+ {% if rip.default_metric is defined %}
+ default-metric {{ rip.default_metric }}
+ {% endif %}
+!
+{% endif %}
+
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+control-plane
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line vty 0 4
+ login
+!
+end
