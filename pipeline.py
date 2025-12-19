@@ -2,12 +2,17 @@ import yaml
 import ipaddress
 from src.models import AS, Router, IGP
 
-# First step of the pipeline : read and serialize yaml config
-def read_config(file_path):
+"""
+This file contains the different functions that make the pipeline this project relies on
+This pipeline take in a yaml configuration file (I.E. templates/example.yaml) and returns Cisco routers configuration files
+The steps of the pipeline are the functions of this file, written in order (first-to-last)
+"""
+
+# Step 1: read and serialize yaml config
+def read_config(file_path: str, ass: dict[str, "AS"]) -> dict[str, "AS"]:
     with open(file_path, 'r') as f:
         data = yaml.safe_load(f)
     
-    ass = {}
     for as_key, as_data in data['ASs'].items():
         # Parse IGP
         igp = getattr(IGP, as_data['igp'].upper())
@@ -38,5 +43,19 @@ def read_config(file_path):
     return ass
 
 
+# Step 2: Assign unique loopback IP addresses to routers from their AS's loopback_space
+def generate_loopback_addresses(ass: dict[str, "AS"]) -> dict[str, "AS"]:
+    for a in ass.values():
+        network = a.loopback_space
+        for i, router in enumerate(a.routers):
+            router.loopback = network.network_address + (i + 1)
+            print(router)
+
+    return ass
+
+
 if __name__ == "__main__":
-    print(read_config("templates/example.yaml"))
+    ass: dict[str, "AS"] = {}
+    read_config("templates/example.yaml", ass)
+    generate_loopback_addresses(ass)
+    
