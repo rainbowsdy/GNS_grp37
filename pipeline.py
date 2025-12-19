@@ -29,7 +29,7 @@ def print_help():
 
 
 # Step 1: read and serialize yaml config
-def read_config(file_path: str, ass: dict[str, "AS"]) -> dict[str, "AS"]:
+def read_config(file_path: str, ass: dict[int, "AS"]) -> dict[int, "AS"]:
     if verbose: print("Step 1: Processing config file...")
     if verbose: print("=================================")
 
@@ -39,39 +39,48 @@ def read_config(file_path: str, ass: dict[str, "AS"]) -> dict[str, "AS"]:
     if verbose: print("Config file successfully read.")
 
     for as_key, as_data in data["ASs"].items():
-        # Parse IGP
-        igp = getattr(IGP, as_data["igp"].upper())
-
-        # Parse loopback space
-        loopback_space = ipaddress.IPv6Network(as_data["loopback_space"])
+        # Create AS object with parsed IGP and loobpack space
+        as_obj = AS(number=as_key, 
+                    igp=getattr(IGP, as_data["igp"].upper()), 
+                    loopback_space=ipaddress.IPv6Network(as_data["loopback_space"]))
 
         # Create Router objects first
         routers_dict = {}
         for r_id, r_data in as_data["routers"].items():
-            router = Router(ID=r_id, border=r_data["border"])
-            routers_dict[r_id] = router
+            routers_dict[r_id] = Router(ID=r_id, As=as_obj, border=r_data["border"])
 
         # Link interfaces (assuming interfaces are lists of router IDs)
         for r_id, router in routers_dict.items():
             interfaces = []
-            for intf_id in as_data["routers"][r_id]["interfaces"]:
-                if intf_id in routers_dict:
-                    interfaces.append(routers_dict[intf_id])
+            for interface_id in as_data["routers"][r_id]["interfaces"]:
+                if interface_id in routers_dict:
+                    interfaces.append(routers_dict[interface_id])
             router.interfaces = interfaces
 
-        # Create AS object
-        as_obj = AS(number=as_key, igp=igp, loopback_space=loopback_space)
         as_obj.routers = list(routers_dict.values())
 
         ass[as_key] = as_obj
         if verbose: print("Serialized:", as_obj)
+
+    # Populate border_interfaces
+    for as_key, as_data in data["ASs"].items():
+        as_obj = ass[as_key]
+        for r_id, r_data in as_data["routers"].items():
+            router = next(r for r in as_obj.routers if r.ID == r_id)
+            if 'border_interfaces' in r_data:
+                for bi in r_data['border_interfaces']:
+                    as_num, rid = bi.split(':')
+                    as_num = int(as_num)
+                    target_as = ass[as_num]
+                    target_router = next(r for r in target_as.routers if r.ID == rid)
+                    router.border_interfaces.append(target_router)
 
     if verbose: print()
     return ass
 
 
 # Step 2: Assign unique loopback IP addresses to routers from their AS's loopback_space
-def generate_loopback_addresses(ass: dict[str, "AS"]) -> dict[str, "AS"]:
+def generate_loopback_addresses(ass: dict[int, "AS"]) -> dict[int, "AS"]:
     if verbose: print("Step 2: Generating and assigning loopback addresses to routers from AS loopback space...")
     if verbose: print("========================================================================================")
 
@@ -106,7 +115,7 @@ if __name__ == "__main__":
     print("Starting pipeline")
     if verbose: print("Config file:", file_path, "\n")
 
-    ass: dict[str, "AS"] = {}
+    ass: dict[int, "AS"] = {}
     read_config(file_path, ass)
     generate_loopback_addresses(ass)
 

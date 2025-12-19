@@ -110,3 +110,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Remove ouptput config
+output/
