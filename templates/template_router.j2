@@ -21,6 +21,17 @@ multilink bundle-name authenticated
 ip tcp synwait-time 5
 !
 
+{# ================= LOOPBACK ================= #}
+{% if loopback is defined %}
+interface {{ loopback.name }}
+ {% if loopback.ipv6 is defined %}
+ ipv6 address {{ loopback.ipv6 }}
+ ipv6 enable
+ {% endif %}
+!
+{% endif %}
+
+
 {# ================= INTERFACES ================= #}
 {% for iface in interfaces %}
 interface {{ iface.name }}
