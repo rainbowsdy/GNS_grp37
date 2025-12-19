@@ -35,25 +35,7 @@ interface {{ loopback.name }}
 {# ================= INTERFACES ================= #}
 {% for iface in interfaces %}
 interface {{ iface.name }}
- {% if iface.shutdown %}
- shutdown
- {% else %}
  no shutdown
- {% endif %}
-
- {% if iface.duplex is defined %}
- duplex {{ iface.duplex }}
- {% endif %}
- {% if iface.speed is defined %}
- speed {{ iface.speed }}
- {% endif %}
- {% if iface.media_type is defined %}
- media-type {{ iface.media_type }}
- {% endif %}
- {% if iface.negotiation is defined %}
- negotiation {{ iface.negotiation }}
- {% endif %}
-
  {% for addr in iface.ipv6_addresses %}
  ipv6 address {{ addr }}
  {% endfor %}
@@ -100,13 +82,9 @@ router bgp {{ bgp.as }}
 
 {# ================= OSPF ================= #}
 {% if ospf is defined %}
-{% if ospf.ipv6 %}
+
 ipv6 router ospf {{ ospf.process_id }}
  router-id {{ ospf.router_id }}
-{% else %}
-router ospf {{ ospf.process_id }}
- router-id {{ ospf.router_id }}
-{% endif %}
 !
 {% endif %}
 

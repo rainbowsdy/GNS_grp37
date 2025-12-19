@@ -2,25 +2,14 @@ routers = [
     {
         # ================= ROUTEUR R1 =================
         "hostname": "R1",
+
         "loopback": {
             "name": "Loopback0",
             "ipv6": "2001:db8:ffff::1/128"
         },
         "interfaces": [
             {
-                "name": "Ethernet0/0",
-                "shutdown": True,
-                "duplex": "auto",
-                "ipv6_addresses": [],
-                "ipv6_enable": False
-            },
-            {
                 "name": "GigabitEthernet0/0",
-                "shutdown": True,
-                "media_type": "gbic",
-                "speed": 1000,
-                "duplex": "full",
-                "negotiation": "auto",
                 "ipv6_addresses": [
                     "2001:100:4:4::/64 eui-64"
                 ],
@@ -28,8 +17,6 @@ routers = [
             },
             {
                 "name": "GigabitEthernet1/0",
-                "shutdown": False,
-                "negotiation": "auto",
                 "ipv6_addresses": [
                     "2001:100:1:1::/64 eui-64",
                     "2001:100:1:11::1/64",
@@ -43,8 +30,6 @@ routers = [
             },
             {
                 "name": "GigabitEthernet2/0",
-                "shutdown": False,
-                "negotiation": "auto",
                 "ipv6_addresses": [
                     "2001:100:4:1::/64 eui-64"
                 ],
@@ -79,13 +64,11 @@ routers = [
         "ospf": {
             "process_id": 1,
             "router_id": "1.1.1.1",
-            "ipv6": True
         },
 
         # ================= RIPng =================
         "rip": {
             "process_name": "RIPNG",
-            "default_metric": 1
         }
     },
 
@@ -99,7 +82,6 @@ routers = [
         "interfaces": [
             {
                 "name": "GigabitEthernet0/0",
-                "shutdown": False,
                 "ipv6_addresses": [
                     "2001:100:4:1::2/64"
                 ],
@@ -116,7 +98,6 @@ routers = [
         "ospf": {
             "process_id": 1,
             "router_id": "2.2.2.2",
-            "ipv6": True
         },
 
         "rip": {

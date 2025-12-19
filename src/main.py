@@ -29,4 +29,4 @@ for router in routers:
     with open(filepath, "w") as f:
         f.write(config)
 
-    print(f"✔ Configuration générée : {filepath}")
+    print(f"Configuration générée : {filepath}")
