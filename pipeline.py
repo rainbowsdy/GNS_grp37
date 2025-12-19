@@ -12,13 +12,13 @@ The steps of the pipeline are the functions of this file, written in order (firs
 
 
 def print_help():
-    print("Usage: python pipeline.py [-f FILE | --file FILE] [-h | --help]")
+    print("Usage: python pipeline.py [-f FILE | --file FILE] [-h | --help] [-v | --verbose]")
     print("Generate Cisco router configs from YAML configuration file.")
     print()
     print("Options:")
     print("  -f, --file FILE    Specify the YAML config file (default: templates/example.yaml)")
     print("  -h, --help         Show this help message and exit")
-    print("   -v, --verbose     Show logs as the pipeline is executed")
+    print("  -v, --verbose     Show logs as the pipeline is executed")
     print()
     print("Examples:")
     print("  python pipeline.py")
@@ -27,9 +27,14 @@ def print_help():
 
 
 # Step 1: read and serialize yaml config
-def read_config(file_path: str, ass: dict[str, "AS"], verbose: bool = False) -> dict[str, "AS"]:
+def read_config(file_path: str, ass: dict[str, "AS"]) -> dict[str, "AS"]:
+    if verbose: print("Step 1: Processing config file...")
+    if verbose: print("=================================")
+
     with open(file_path, "r") as f:
         data = yaml.safe_load(f)
+
+    if verbose: print("Config file successfully read.")
 
     for as_key, as_data in data["ASs"].items():
         # Parse IGP
@@ -57,17 +62,25 @@ def read_config(file_path: str, ass: dict[str, "AS"], verbose: bool = False) -> 
         as_obj.routers = list(routers_dict.values())
 
         ass[as_key] = as_obj
+        if verbose: print("Serialized:", as_obj)
 
+    if verbose: print()
     return ass
 
 
 # Step 2: Assign unique loopback IP addresses to routers from their AS's loopback_space
-def generate_loopback_addresses(ass: dict[str, "AS"], verbose: bool = False) -> dict[str, "AS"]:
+def generate_loopback_addresses(ass: dict[str, "AS"]) -> dict[str, "AS"]:
+    if verbose: print("Step 2: Generating and assigning loopback addresses to routers from AS loopback space...")
+    if verbose: print("========================================================================================")
+
     for a in ass.values():
         network = a.loopback_space
+        if verbose: print(f"Now processing routers in AS number {a.number}...")
         for i, router in enumerate(a.routers):
             router.loopback = network.network_address + (i + 1)
+            if (verbose): print("Processed :", router)
 
+    if verbose: print()
     return ass
 
 
@@ -84,10 +97,15 @@ if __name__ == "__main__":
         exit(0)
 
     file_path: str = args.file
+    global verbose
     verbose: bool = args.verbose
 
+    # Start pipeline
+    print("Starting pipeline")
+    if verbose: print("Config file:", file_path, "\n")
+
     ass: dict[str, "AS"] = {}
-    read_config(file_path, ass, verbose)
-    generate_loopback_addresses(ass, verbose)
+    read_config(file_path, ass)
+    generate_loopback_addresses(ass)
 
     print("Pipeline completed. Router configurations ready.")
