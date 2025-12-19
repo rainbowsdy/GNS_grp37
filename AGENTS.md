@@ -3,10 +3,6 @@
 ## Build Commands
 - Install dependencies: `pip install -r requirements.txt`
 
-## Lint Commands
-- Lint: `flake8 .`
-- Format: `black .`
-
 ## Test Commands
 - Run all tests: `pytest`
 - Run single test: `pytest path/to/test_file.py::TestClass::test_method`
