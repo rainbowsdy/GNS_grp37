@@ -1,3 +1,4 @@
+"""
 import lecture_fichier as lf  
 
 def fin_init_routeur(chemin_fichier):
@@ -23,3 +24,5 @@ def config_interface(nom_interface,subnet_address,chemin_fichier):
     """
     string= f"interface %s\n ipv6 address %s/64 eui-64",nom_interface,subnet_address
     lf.ajouter_fin_dans_fichier()
+"""
+#Fichier Obselete, implémentation de l'écriture du fichier de config modifiée
