@@ -13,3 +13,13 @@ def fin_init_routeur(chemin_fichier):
         contenu = f.read()
     lf.ajouter_fin_dans_fichier(chemin_fichier, contenu)
 
+def config_interface(nom_interface,subnet_address,chemin_fichier):
+    """
+    Configure une interface, lui associe une adresse avec EUI-64 dans le subnet
+    
+    :param nom_interface: STR Gigabitethernet0/0 par exemple...
+    :param subnet_address: STR prefixe d'addresse qui est non alloué ( en /64 )
+    :param chemin_fichier: le chemin du fichier config pour le routeur cible
+    """
+    string= f"interface %s\n ipv6 address %s/64 eui-64",nom_interface,subnet_address
+    lf.ajouter_fin_dans_fichier()
