@@ -111,3 +111,8 @@ if __name__ == "__main__":
     generate_loopback_addresses(ass)
 
     print("Pipeline completed. Router configurations ready.")
+
+    #ecriture config
+    as_list = list(ass.values())
+    routers_for_template = convert_as_to_dict_list(as_list)
+    ecriture_config(routers_for_template)
