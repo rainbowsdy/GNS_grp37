@@ -22,15 +22,10 @@ ip tcp synwait-time 5
 !
 
 {# ================= LOOPBACK ================= #}
-{% if loopback is defined %}
-interface {{ loopback.name }}
- {% if loopback.ipv6 is defined %}
+interface Loopback0
  ipv6 address {{ loopback.ipv6 }}
  ipv6 enable
- {% endif %}
 !
-{% endif %}
-
 
 {# ================= INTERFACES ================= #}
 {% for iface in interfaces %}
@@ -39,19 +34,17 @@ interface {{ iface.name }}
  {% for addr in iface.ipv6_addresses %}
  ipv6 address {{ addr }}
  {% endfor %}
-
- {% if iface.ipv6_enable %}
  ipv6 enable
+
+
+ {# ---------- OSPFv3 ---------- #}
+ {% if iface.ospf_area is defined %}
+ ipv6 ospf 1 area {{ iface.ospf_area }}
  {% endif %}
 
- {# ---------- OSPF ---------- #}
- {% if ospf is defined and iface.ospf_area is defined %}
- ipv6 ospf {{ ospf.process_id }} area {{ iface.ospf_area }}
- {% endif %}
-
- {# ---------- RIP ---------- #}
- {% if rip is defined and iface.rip_enable %}
- ipv6 rip {{ rip.process_name }} enable
+ {# ---------- RIPng ---------- #}
+ {% if iface.rip_enable %}
+ ipv6 rip RIPng enable
  {% endif %}
 !
 {% endfor %}
@@ -62,6 +55,7 @@ router bgp {{ bgp.as }}
  bgp router-id {{ bgp.router_id }}
  bgp log-neighbor-changes
  no bgp default ipv4-unicast
+
  {% for n in bgp.neighbors %}
  neighbor {{ n.address }} remote-as {{ n.remote_as }}
  {% endfor %}
@@ -80,20 +74,16 @@ router bgp {{ bgp.as }}
 !
 {% endif %}
 
-{# ================= OSPF ================= #}
+{# ================= OSPFv3 GLOBAL ================= #}
 {% if ospf is defined %}
-
-ipv6 router ospf {{ ospf.process_id }}
+ipv6 router ospf 1
  router-id {{ ospf.router_id }}
 !
 {% endif %}
 
-{# ================= RIP ================= #}
+{# ================= RIPng GLOBAL ================= #}
 {% if rip is defined %}
 ipv6 router rip {{ rip.process_name }}
- {% if rip.default_metric is defined %}
- default-metric {{ rip.default_metric }}
- {% endif %}
 !
 {% endif %}
 
