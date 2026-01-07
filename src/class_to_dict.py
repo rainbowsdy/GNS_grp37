@@ -1,6 +1,7 @@
 import ipaddress
 from src.models import AS, Router, IGP
 
+
 def convert_as_to_dict_list(as_list: list[AS]) -> list[dict]:
     """
     Transforme une liste d'AS avec leurs routers en une liste de dictionnaires
@@ -18,7 +19,7 @@ def convert_as_to_dict_list(as_list: list[AS]) -> list[dict]:
 
             # Conversion des interfaces en dicts
             interfaces_list = []
-            for intf_router in router.interfaces:
+            for intf_router in router.neighbours:
                 iface_dict = {
                     "name": getattr(intf_router, "ID", "unknown"),
                     "ipv6_addresses": getattr(intf_router, "ipv6_addresses", []),
@@ -31,11 +32,8 @@ def convert_as_to_dict_list(as_list: list[AS]) -> list[dict]:
             # Création du dict router principal
             r_dict = {
                 "hostname": router.ID,
-                "loopback": {
-                    "name": "Loopback0",
-                    "ipv6": loopback_ip + "/128"
-                },
-                "interfaces": interfaces_list
+                "loopback": {"name": "Loopback0", "ipv6": loopback_ip + "/128"},
+                "interfaces": interfaces_list,
             }
 
             # BGP si router frontière
@@ -43,20 +41,19 @@ def convert_as_to_dict_list(as_list: list[AS]) -> list[dict]:
                 r_dict["bgp"] = {
                     "as": as_obj.number,
                     "router_id": loopback_ip,  # router-id basé sur loopback
-                    "neighbors": [],           # à compléter selon topologie
-                    "networks": [ip for iface in interfaces_list for ip in iface.get("ipv6_addresses", [])]
+                    "neighbors": [],  # à compléter selon topologie
+                    "networks": [
+                        ip
+                        for iface in interfaces_list
+                        for ip in iface.get("ipv6_addresses", [])
+                    ],
                 }
 
             # IGP selon AS
             if as_obj.igp == IGP.OSPF:
-                r_dict["ospf"] = {
-                    "process_id": 1,
-                    "router_id": loopback_ip
-                }
+                r_dict["ospf"] = {"process_id": 1, "router_id": loopback_ip}
             elif as_obj.igp == IGP.RIP:
-                r_dict["rip"] = {
-                    "process_name": "RIPNG"
-                }
+                r_dict["rip"] = {"process_name": "RIPNG"}
 
             router_dicts.append(r_dict)
 
