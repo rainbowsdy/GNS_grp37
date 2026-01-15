@@ -22,20 +22,28 @@ ip tcp synwait-time 5
 !
 
 {# ================= LOOPBACK ================= #}
+{% if loopback is defined %}
 interface Loopback0
  ipv6 address {{ loopback.ipv6 }}
  ipv6 enable
 !
+{% endif %}
 
 {# ================= INTERFACES ================= #}
 {% for iface in interfaces %}
 interface {{ iface.name }}
  no shutdown
- {% for addr in iface.ipv6_addresses %}
- ipv6 address {{ addr }}
- {% endfor %}
- ipv6 enable
 
+ {# --- IPv6 addresses (list OR dict) --- #}
+ {% if iface.ipv6_addresses is iterable and iface.ipv6_addresses is not mapping %}
+   {% for addr in iface.ipv6_addresses %}
+ ipv6 address {{ addr }}
+   {% endfor %}
+ {% elif iface.ipv6_addresses is mapping %}
+ ipv6 address {{ iface.ipv6_addresses.ipv6 }}
+ {% endif %}
+
+ ipv6 enable
 
  {# ---------- OSPFv3 ---------- #}
  {% if iface.ospf_area is defined %}
@@ -49,35 +57,35 @@ interface {{ iface.name }}
 !
 {% endfor %}
 
+{# ================= OSPFv3 GLOBAL ================= #}
+{% if ospf is defined %}
+ipv6 router ospf 1
+ router-id {{ hostname.split(':')[1] }}
+!
+{% endif %}
+
 {# ================= BGP ================= #}
 {% if bgp is defined %}
 router bgp {{ bgp.as }}
- bgp router-id {{ bgp.router_id }}
+ bgp router-id {{ hostname.split(':')[1] }}
  bgp log-neighbor-changes
  no bgp default ipv4-unicast
 
- {% for n in bgp.neighbors %}
- neighbor {{ n.address }} remote-as {{ n.remote_as }}
+ {% for n in bgp.neighbours %}
+ neighbor {{ n.address.ipv6 }} remote-as {{ n.remote_as }}
  {% endfor %}
  !
  address-family ipv4
  exit-address-family
  !
- address-family ipv6
-  {% for net in adv_networks %}
+ address-family ipv6 unicast
+  {% for net in bgp.networks %}
   network {{ net }}
   {% endfor %}
-  {% for n in bgp.neighbors %}
-  neighbor {{ n.address }} activate
+  {% for n in bgp.neighbours %}
+  neighbor {{ n.address.ipv6 }} activate
   {% endfor %}
  exit-address-family
-!
-{% endif %}
-
-{# ================= OSPFv3 GLOBAL ================= #}
-{% if ospf is defined %}
-ipv6 router ospf 1
- router-id {{ ospf.router_id }}
 !
 {% endif %}
 

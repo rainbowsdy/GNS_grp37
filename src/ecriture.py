@@ -17,7 +17,7 @@ def ecriture_config(routers_for_template,verbose):
         lstrip_blocks=True
     )
     # Config par routeur
-    template = env.get_template("template_router.j2")
+    template = env.get_template("template_router_test.j2")
     for router in routers_for_template:
         config = template.render(**router)
 
@@ -32,4 +32,4 @@ def ecriture_config(routers_for_template,verbose):
             f.write(config)
 
         if verbose:
-            print(f"Configuration générée : {filepath}")
+            print(f"Configuration générée : {filepath} \n\n")
