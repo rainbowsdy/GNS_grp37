@@ -23,13 +23,13 @@ ASs:
             addresses: # Ignored if bgp is on (we use loopback addresses)
               - "2001::3/64"
               - "2001::4/64"
-              
-          GigabitEthernet0/0:
+ 
+          GigabitEthernet0/1:
             neighbour: "112:1.1.1.1"
             bgp: True
             ospf: True
             rip: False
-              
+
   112:
     loopback_space: "2001:1:1:2::/64"
     routers:
@@ -40,5 +40,4 @@ ASs:
             bgp: True
             ospf: False
             rip: False
-          
-    
+
