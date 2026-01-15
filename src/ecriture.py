@@ -3,7 +3,7 @@ import os
 
 
 
-def ecriture_config(routers_for_template):
+def ecriture_config(routers_for_template,verbose):
     # Dossier des templates
     TEMPLATE_DIR = "templates"
     # Dossier de sortie
@@ -21,10 +21,15 @@ def ecriture_config(routers_for_template):
     for router in routers_for_template:
         config = template.render(**router)
 
-        filename = f"{router['hostname']}.cfg"
-        filepath = os.path.join(OUTPUT_DIR, filename)
+        emplacement= router['hostname'].split(":") # [0] est l'AS , [1] est le nom du routeur
+
+        filename = f"{emplacement[1]}.cfg"
+        filepath = os.path.join(OUTPUT_DIR, emplacement[0])
+        os.makedirs(filepath, exist_ok=True)
+        filepath = os.path.join(filepath, filename)
 
         with open(filepath, "w") as f:
             f.write(config)
 
-        print(f"Configuration générée : {filepath}")
+        if verbose:
+            print(f"Configuration générée : {filepath}")

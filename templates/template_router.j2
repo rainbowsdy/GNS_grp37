@@ -64,7 +64,7 @@ router bgp {{ bgp.as }}
  exit-address-family
  !
  address-family ipv6
-  {% for net in bgp.networks %}
+  {% for net in adv_networks %}
   network {{ net }}
   {% endfor %}
   {% for n in bgp.neighbors %}

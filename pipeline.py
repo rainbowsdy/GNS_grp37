@@ -4,6 +4,7 @@ import argparse
 from pprint import pprint
 from src.step1 import step1
 from src.step2 import step2
+from src.ecriture import ecriture_config
 
 
 def print_help():
@@ -52,6 +53,7 @@ if __name__ == "__main__":
 
     routers = step1(file_path, verbose)
     step2(routers, verbose)
+    ecriture_config(routers,verbose)
 
     if verbose:
         pprint(routers)
