@@ -2,8 +2,7 @@ from jinja2 import Environment, FileSystemLoader
 import os
 
 
-
-def ecriture_config(routers_for_template,verbose):
+def ecriture_config(routers_for_template, verbose):
     # Dossier des templates
     TEMPLATE_DIR = "templates"
     # Dossier de sortie
@@ -12,16 +11,16 @@ def ecriture_config(routers_for_template,verbose):
 
     # Initialisation de Jinja2
     env = Environment(
-        loader=FileSystemLoader(TEMPLATE_DIR),
-        trim_blocks=True,
-        lstrip_blocks=True
+        loader=FileSystemLoader(TEMPLATE_DIR), trim_blocks=True, lstrip_blocks=True
     )
     # Config par routeur
-    template = env.get_template("template_router_test.j2")
+    template = env.get_template("template_router.j2")
     for router in routers_for_template:
         config = template.render(**router)
 
-        emplacement= router['hostname'].split(":") # [0] est l'AS , [1] est le nom du routeur
+        emplacement = router["hostname"].split(
+            ":"
+        )  # [0] est l'AS , [1] est le nom du routeur
 
         filename = f"{emplacement[1]}.cfg"
         filepath = os.path.join(OUTPUT_DIR, emplacement[0])

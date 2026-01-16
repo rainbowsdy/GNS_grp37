@@ -39,9 +39,7 @@ def __process_as__(routers, as_number, as_data):
         # Add interfaces
         interfaces = []
         for int_name, int_data in r["interfaces"].items():
-            ospf, interface = __process_interface__(
-                int_name, int_data, router, bgp_neighbours, ospf
-            )
+            ospf, interface = __process_interface__(int_name, int_data, ospf)
             interfaces.append(interface)
 
         router["interfaces"] = interfaces
@@ -63,31 +61,18 @@ def __process_as__(routers, as_number, as_data):
         routers.append(router)
 
 
-def __process_interface__(
-    int_name, int_data, router, bgp_neighbours, ospf
-) -> tuple[bool, dict]:
+def __process_interface__(int_name, int_data, ospf) -> tuple[bool, dict]:
     interface = {
         "name": int_name,
         "ipv6_enable": True,
         "rip_enable": int_data["rip"],
+        "ipv6_addresses": int_data["addresses"],
     }
 
     # Add interface-specific ospf config
     if int_data["ospf"]:
         ospf = True
         interface["ospf_area"] = 0
-
-    # Add interface-specific bgp config
-    if int_data["bgp"]:
-        bgp_neighbours.append(
-            {
-                "address": str(int_data["neighbour"]),  # Not an IP address for now
-                "remote_as": None,  # Not a remote as for now
-            }
-        )
-        interface["ipv6_addresses"] = router["loopback"]
-    else:
-        interface["ipv6_addresses"] = int_data["addresses"]
 
     return ospf, interface
 
