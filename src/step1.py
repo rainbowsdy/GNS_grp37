@@ -10,10 +10,13 @@ def step1(filepath: str, verbose: bool = False) -> list:
     routers = []
 
     with open(filepath, "r") as f:
-        data = yaml.safe_load(f)["ASs"]
+        data = yaml.safe_load(f)
         if verbose:
             print("#STEP 1: ")
             print(f"Reading from config: {data}")
+
+        if "ASs" in data:
+            data = data["ASs"]
 
         for an, a in data.items():
             __process_as__(routers, an, a)

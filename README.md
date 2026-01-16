@@ -20,5 +20,62 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Exemple
-Voir `templates/example.yaml` pour un exemple de configuration avec deux AS.
+## Fichier d'intention
+Vous pouvez trouver un exemple complet dans `templates/example.yaml`, avec une démo des IGPs supportés dans 3 AS différents.
+
+### AS
+Le fichier est organisé par AS de la façcon suivante:
+```yaml
+ASs:
+	111:
+		...
+	112:
+		...
+```
+
+*A noter que l'en-tête `ASs` n'est pas obligatoire:*
+```yaml
+111:
+	...
+112:
+	...
+```
+
+On configure ensuite les paramètres suivants, qui sont obligatoires:
+```yaml
+111:
+	igp: "(ospf|rip)" # Applicable sur tout l'AS
+	loopback_space: "2001::/64" # Espace d'adresses de loopback des routeurs
+```
+
+### Routeurs
+Chaque AS contient plusieurs routeurs, indiqués par leurs ID:
+```yaml
+111:
+	routers:
+		R1:
+			...
+		R2:
+			...
+```
+
+La configuration d'un routeur inclus une liste d'interfaces:
+```yaml
+R1:
+	interfaces:
+		GigabitEthernet0/0:
+			...
+		GigabitEthernet0/1:
+			...
+```
+
+### Interfaces
+Une interface est configurée de la façon suivante:
+```yaml
+GigabitEthernet0/0:
+	neighbour: "[as_number:](router_id)" # as_number optionnel si le routeur est dans le même AS
+	bgp: "(none|peer|client|provider)" # none par défaut
+	addresses: # Spécifie une liste d'adresses IPv6
+		- "2001::1/64"
+		- "2001::2/64"
+```

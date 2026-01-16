@@ -7,15 +7,15 @@ ASs:
       R1:
         interfaces:
           GigabitEthernet0/0:
-            neighbour: "112:R3" # If same as, as number not required. If different as, ospf_area and rip ignored
-            bgp: True
+            neighbour: "112:R3" # If same as, as number not required.
+            bgp: peer # peer|client|provider|none, default is none
             addresses:
               - "2001::1/64"
       R2:
         interfaces:
           GigabitEthernet0/0:
             neighbour: "112:R4"
-            bgp: True
+            bgp: peer
             addresses:
               - "2002::2/64"
 
@@ -28,13 +28,13 @@ ASs:
         interfaces:
           GigabitEthernet0/0:
             neighbour: "111:R1"
-            bgp: True
+            bgp: peer
             addresses:
               - "2001::3/64"
       R4:
         interfaces:
           GigabitEthernet0/0:
             neighbour: "111:R2"
-            bgp: True
+            bgp: peer
             addresses:
               - "2002::4/64"
