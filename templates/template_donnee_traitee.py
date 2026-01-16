@@ -1,70 +1,29 @@
-routers = [
-    {
-        # ================= ROUTEUR R1 =================
-        "hostname": "R1",
-        "loopback": {"ipv6": "2001:db8:ffff::1/128"},
-        "interfaces": [
-            {
-                "name": "GigabitEthernet0/0",
-                "ipv6_addresses": ["2001:100:4:4::/64 eui-64"],
-                "ipv6_enable": True,
-            },
-            {
-                "name": "GigabitEthernet1/0",
-                "ipv6_addresses": [
-                    "2001:100:1:1::/64 eui-64",
-                    "2001:100:1:11::1/64",
-                    "2001:100:1:12::1/64",
-                    "2001:100:1:13::1/64",
-                    "2001:200:200:201::1/64",
-                ],
-                "ipv6_enable": True,
-                "ospf_area": 0,
-                "rip_enable": True,
-            },
-            {
-                "name": "GigabitEthernet2/0",
-                "ipv6_addresses": ["2001:100:4:1::/64 eui-64"],
-                "ipv6_enable": True,
-                "ospf_area": 0,
-                "rip_enable": False,
-            },
-        ],
-        # ================= BGP =================
-        "bgp": {
-            "as": 111,
-            "router_id": "1.1.1.1",
-            "neighbors": [
-                {"address": "2001:100:4:1:C802:3EFF:FE4C:1C", "remote_as": 112}
-            ],
-            "networks": [
-                "2001:100:1:1::/64",
-                "2001:100:1:11::/64",
-                "2001:100:1:12::/64",
-                "2001:100:1:13::/64",
-                "2001:100:4:1::/64",
-                "2001:100:4:4::/64",
-                "2001:200:200:201::/64",
-            ],
-        },
-        # ================= OSPFv3 =================
-        "ospf": {"router_id": "1.1.1.1"},
-    },
-    {
-        # ================= ROUTEUR R2 =================
-        "hostname": "R2",
-        "loopback": {"ipv6": "2001:db8:ffff::1/128"},
-        "interfaces": [
-            {
-                "name": "GigabitEthernet0/0",
-                "ipv6_addresses": ["2001:100:4:1::2/64"],
-                "ipv6_enable": True,
-                "ospf_area": 0,
-                "rip_enable": True,
-            }
-        ],
-        # R2 ne fait PAS de BGP
-        # Pas de clé "bgp"
-        "ospf": {"router_id": "2.2.2.2"},
-    },
-]
+### Voici a quoi ressemblent les données après les deux premieres etapes de la pipeline
+
+routers = [{'hostname': '111:R1',
+            'interfaces':
+                [{'ipv6_addresses':['2001::1/64'],
+                'ipv6_enable': True,
+                'name': 'GigabitEthernet0/0',
+                'rip_enable': False}],
+                'loopback':{'ipv6': '2001:1:1:1::1'},
+                'ospf':{'router_id': 'R1'}},
+ {'hostname': '111:R2',
+  'interfaces': [{'ipv6_addresses': ['2002::2/64'],
+                  'ipv6_enable': True,
+                  'name': 'GigabitEthernet0/0',
+                  'rip_enable': False}],
+  'loopback': {'ipv6': '2001:1:1:1::2'},
+  'ospf': {'router_id': 'R2'}},
+ {'hostname': '112:R3',
+  'interfaces': [{'ipv6_addresses': ['2001::3/64'],
+                  'ipv6_enable': True,
+                  'name': 'GigabitEthernet0/0',
+                  'rip_enable': True}],
+  'loopback': {'ipv6': '2001:1:1:2::1'}},
+ {'hostname': '112:R4',
+  'interfaces': [{'ipv6_addresses': ['2002::4/64'],
+                  'ipv6_enable': True,
+                  'name': 'GigabitEthernet0/0',
+                  'rip_enable': True}],
+  'loopback': {'ipv6': '2001:1:1:2::2'}}]

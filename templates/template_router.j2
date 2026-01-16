@@ -20,7 +20,10 @@ multilink bundle-name authenticated
 !
 ip tcp synwait-time 5
 !
-
+!
+!
+!
+!
 {# ================= LOOPBACK ================= #}
 {% if loopback is defined %}
 interface Loopback0
@@ -28,12 +31,14 @@ interface Loopback0
  ipv6 enable
 !
 {% endif %}
-
+!
+!
+!
+!
 {# ================= INTERFACES ================= #}
 {% for iface in interfaces %}
 interface {{ iface.name }}
  no shutdown
-
  {# --- IPv6 addresses (list OR dict) --- #}
  {% if iface.ipv6_addresses is iterable and iface.ipv6_addresses is not mapping %}
    {% for addr in iface.ipv6_addresses %}
@@ -42,37 +47,35 @@ interface {{ iface.name }}
  {% elif iface.ipv6_addresses is mapping %}
  ipv6 address {{ iface.ipv6_addresses.ipv6 }}
  {% endif %}
-
  ipv6 enable
-
  {# ---------- OSPFv3 ---------- #}
  {% if iface.ospf_area is defined %}
  ipv6 ospf 1 area {{ iface.ospf_area }}
  {% endif %}
-
  {# ---------- RIPng ---------- #}
  {% if iface.rip_enable %}
  ipv6 rip RIPng enable
  {% endif %}
 !
 {% endfor %}
-
+!
+!
 {# ================= OSPFv3 GLOBAL ================= #}
 {% if ospf is defined %}
 ipv6 router ospf 1
  router-id {{ hostname.split(':')[1] }}
-!
 {% endif %}
-
+!
+!
 {# ================= BGP ================= #}
 {% if bgp is defined %}
 router bgp {{ bgp.as }}
  bgp router-id {{ hostname.split(':')[1] }}
  bgp log-neighbor-changes
  no bgp default ipv4-unicast
-
  {% for n in bgp.neighbours %}
- neighbor {{ n.address.ipv6 }} remote-as {{ n.remote_as }}
+ neighbor {{ n.address.ipv6 }} remote-as {{ n.remote_as }}*
+ neighbor {{ n.address.ipv6 }} update-source Loopback0
  {% endfor %}
  !
  address-family ipv4
@@ -88,13 +91,14 @@ router bgp {{ bgp.as }}
  exit-address-family
 !
 {% endif %}
-
+!
 {# ================= RIPng GLOBAL ================= #}
 {% if rip is defined %}
 ipv6 router rip {{ rip.process_name }}
 !
 {% endif %}
-
+!
+!
 ip forward-protocol nd
 !
 no ip http server
