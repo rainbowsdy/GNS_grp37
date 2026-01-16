@@ -1,43 +1,40 @@
 ASs:
   111:
+    igp: "ospf" # ospf | ibgp | rip
+    bgp_strategy: null # We'll see about this one later
     loopback_space: "2001:1:1:1::/64"
     routers:
-      1.1.1.1:
+      R1:
         interfaces:
           GigabitEthernet0/0:
-            neighbour: "111:2.2.2.2" # If same as, as number not required. If different as, ospf_area and rip ignored
-            ospf: True
-            rip: False
-            addresses: # Ignored if bgp is on (we use loopback addresses)
-              - "2001::1/64"
-              - "2001::2/64"
-
-      2.2.2.2:
-        interfaces:
-          GigabitEthernet0/0:
-            neighbour: "111:1.1.1.1" # If same as, as number not required. If different as, ospf_area and rip ignored
-            ospf: True
-            rip: False
-            addresses: # Ignored if bgp is on (we use loopback addresses)
-              - "2001::3/64"
-              - "2001::4/64"
- 
-          GigabitEthernet0/1:
-            neighbour: "112:1.1.1.1"
-            ospf: True
-            rip: False
+            neighbour: "112:R3" # If same as, as number not required. If different as, ospf_area and rip ignored
+            bgp: True
             addresses:
-              - "2001:1::1/64"
+              - "2001::1/64"
+      R2:
+        interfaces:
+          GigabitEthernet0/0:
+            neighbour: "112:R4"
+            bgp: True
+            addresses:
+              - "2002::2/64"
 
   112:
+    igp: "rip"
+    bgp_strategy: null
     loopback_space: "2001:1:1:2::/64"
     routers:
-      1.1.1.1:
+      R3:
         interfaces:
           GigabitEthernet0/0:
-            neighbour: "111:2.2.2.2"
-            ospf: False
-            rip: False
+            neighbour: "111:R1"
+            bgp: True
             addresses:
-              - "2001:1::2/64"
-
+              - "2001::3/64"
+      R4:
+        interfaces:
+          GigabitEthernet0/0:
+            neighbour: "111:R2"
+            bgp: True
+            addresses:
+              - "2002::4/64"
