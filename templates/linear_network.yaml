@@ -1,0 +1,46 @@
+ASs:
+  # This is AS X
+  111:
+    loopback_space: "2001:1:1:1/64"
+    routers:
+      # This is router 1
+      1.1.1.1:
+        interfaces:
+          GigabitEthernet1/0:
+            neighbour: "112:1.1.1.1"
+            bgp: True
+            rip: True
+          GigabitEthernet2/0:
+            neighbour: "111:2.2.2.2"
+            rip: True
+            addresses:
+              - "2001:10:1:1::1/64"
+        bgp:
+          
+
+      # This is router 2
+      2.2.2.2:
+        interfaces:
+          GigabitEthernet2/0:
+            neighbour: "111:1.1.1.1"
+            rip: True
+            addresses:
+              - "2001:10:1:1::2/64"
+          GigabitEthernet1/0:
+            neighbour: "111:3.3.3.3"
+            rip: True
+            addresses:
+              - "2001:10:1:2::2/64"
+
+      # This is router 3
+      3.3.3.3:
+        interfaces:
+          GigabitEthernet1/0:
+            neighbour: "111:2.2.2.2"
+            rip: True
+            addresses:
+              - "2001:10:1:2::3/64"
+
+  # This is AS Y
+  112:
+    loopback_space: "2001"
