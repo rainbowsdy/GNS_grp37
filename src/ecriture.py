@@ -28,7 +28,7 @@ def ecriture_config(routers_for_template, verbose):
         filepath = os.path.join(filepath, filename)
 
         with open(filepath, "w") as f:
-            f.write(config)
+            f.write(config + "\n")
 
         if verbose:
             print(f"Configuration générée : {filepath} \n\n")

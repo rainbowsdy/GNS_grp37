@@ -22,13 +22,15 @@ def step1(filepath: str, verbose: bool = False) -> list:
 
 
 def __process_as__(routers, as_number, as_data):
-    i = 0
-    for ri, r in as_data["routers"].items():
-        # Keep track of whether ospf is enabled router-wide
-        ospf = False
-        i += 1
+    # Note on IGPs:
+    # Different IGPs are configured in diffeerent places or stages
+    # OSPF is taken care of in this function
+    # RIP is configured per interface, so in this step but in the __process_interface__ function
+    # iBGP is configured in this stage, but we aren't sure how yet since it hasn't been implemented yet
+    igp = as_data["igp"]
 
-        # Add hostname (router id) and computed loopback from loopback_space
+    for i, (ri, r) in enumerate(as_data["routers"].items()):
+        # Add hostname (as:router_id) and computed loopback from loopback_space
         router = {
             "hostname": f"{as_number}:{ri}",
             "loopback": {
@@ -39,32 +41,27 @@ def __process_as__(routers, as_number, as_data):
         # Add interfaces
         interfaces = []
         for int_name, int_data in r["interfaces"].items():
-            ospf, interface = __process_interface__(int_name, int_data, ospf)
+            interface = __process_interface__(int_name, int_data, igp)
             interfaces.append(interface)
 
         router["interfaces"] = interfaces
 
         # Add ospf config if it is enabled
-        if ospf:
+        if igp == "ospf":
             router["ospf"] = {"router_id": ri}
 
         routers.append(router)
 
 
-def __process_interface__(int_name, int_data, ospf) -> tuple[bool, dict]:
+def __process_interface__(int_name, int_data, igp) -> dict:
     interface = {
         "name": int_name,
         "ipv6_enable": True,
-        "rip_enable": int_data["rip"],
+        "rip_enable": igp == "rip",
         "ipv6_addresses": int_data["addresses"],
     }
 
-    # Add interface-specific ospf config
-    if int_data["ospf"]:
-        ospf = True
-        interface["ospf_area"] = 0
-
-    return ospf, interface
+    return interface
 
 
 def main():
