@@ -52,8 +52,7 @@ if __name__ == "__main__":
     # Step 2 : Rsolve BGP data
 
     routers = step1(file_path, verbose)
-    step2(routers, verbose)
-    ecriture_config(routers,verbose)
+    ecriture_config(routers, verbose)
 
     if verbose:
         pprint(routers)

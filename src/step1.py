@@ -24,8 +24,8 @@ def step1(filepath: str, verbose: bool = False) -> list:
 def __process_as__(routers, as_number, as_data):
     i = 0
     for ri, r in as_data["routers"].items():
-        # Keep track of whether ospf and bgp are enabled router-wide
-        ospf, bgp_neighbours = False, []
+        # Keep track of whether ospf is enabled router-wide
+        ospf = False
         i += 1
 
         # Add hostname (router id) and computed loopback from loopback_space
@@ -44,19 +44,9 @@ def __process_as__(routers, as_number, as_data):
 
         router["interfaces"] = interfaces
 
-        # Add ospf and bgp config if they are enabled
+        # Add ospf config if it is enabled
         if ospf:
             router["ospf"] = {"router_id": ri}
-
-        if len(bgp_neighbours):
-            # Transfrom the router ids to loopbacks first
-
-            router["bgp"] = {
-                "as": as_number,
-                "router_id": ri,
-                "neighbours": bgp_neighbours,
-                "networks": [],  # Empty networks for now
-            }
 
         routers.append(router)
 
