@@ -60,6 +60,7 @@ def __process_interface__(int_name, int_data, igp) -> dict:
     interface = {
         "name": int_name,
         "ipv6_enable": True,
+        "ospf_area": int_data.get("ospf_area", 0),
         "rip_enable": igp == "rip",
         "ipv6_addresses": int_data["addresses"],
     }
@@ -68,8 +69,9 @@ def __process_interface__(int_name, int_data, igp) -> dict:
 
 
 def main():
-    with open("templates/example.yaml", "r") as f:
-        data = yaml.safe_load(f)
+    import step1
+
+    data = step1.main()
     routers = step2(data, True)
     pprint(routers)
     return routers

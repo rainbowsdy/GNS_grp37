@@ -99,13 +99,13 @@ def __assign_networks_across_ases__(all_as_data):
 
 def main():
     import yaml
-    from src.step1 import step1
 
     # Load config and run step1
     with open("templates/example.yaml", "r") as f:
         data = yaml.safe_load(f)
 
     step1(data, verbose=True)
+    return data
 
 
 if __name__ == "__main__":

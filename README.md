@@ -75,6 +75,7 @@ La configuration d'un routeur inclus une liste d'interfaces:
 
 ```yaml
 R1:
+ ospf_area: 0 # Valide si igp est ospf, vaut 0 par défaut
  interfaces:
   GigabitEthernet0/0:
    ...

@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
     step1(config_data, verbose)  # Pass empty list, step2 modifies config_data
     routers = step2(config_data, verbose)
-    routers = step3(routers, verbose)
+    routers = step3(config_data, routers, verbose)
 
     # Step 4 : only if --dry-run flag is unset
     if not dry_run:
