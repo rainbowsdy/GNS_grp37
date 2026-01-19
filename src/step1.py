@@ -64,7 +64,7 @@ def __process_interface__(int_name, int_data, igp) -> dict:
         "ipv6_addresses": int_data["addresses"],
         # Data left here for next steps
         "neighbour": int_data["neighbour"],
-        "bgp": int_data["bgp"],
+        "bgp": int_data.get("bgp", "none"),
     }
 
     return interface
