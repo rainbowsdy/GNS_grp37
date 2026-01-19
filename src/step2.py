@@ -1,43 +1,79 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 
-import pprint
+import yaml
+import ipaddress
+from pprint import pprint
 
 
-# Translate as:router_id to actual ip addresses
-def step2(routers: list, verbose: bool = False):
-    if verbose:
-        print("#STEP 2:")
-        print("Resolving BGP loopback addresses and as numbers")
-
-    for r in routers:
-        if "bgp" not in r:
-            continue
-
-        for n in r["bgp"]["neighbours"]:
-            n["address"], n["remote_as"] = __resolve_loopback__(routers, n["address"])
+# Parse yaml config data and transform it to match the output structure
+def step2(data: dict, verbose: bool = False) -> list:
+    routers = []
 
     if verbose:
-        print()
+        print("#STEP 2: ")
+        pprint(f"Processing config: {data}")
 
+    if "ASs" in data:
+        data = data["ASs"]
+
+    for an, a in data.items():
+        __process_as__(routers, an, a)
+
+    if verbose:
+        print("Data parsed successfully")
     return routers
 
 
-def __resolve_loopback__(routers, address: str) -> tuple[str, str]:
-    asn = str(address).split(":")[0]
+def __process_as__(routers, as_number, as_data):
+    # Note on IGPs:
+    # Different IGPs are configured in diffeerent places or stages
+    # OSPF is taken care of in this function
+    # RIP is configured per interface, so in this step but in the __process_interface__ function
+    # iBGP is configured in this stage, but we aren't sure how yet since it hasn't been implemented yet
+    igp = as_data["igp"]
 
-    for r in routers:
-        if r["hostname"] != address:
-            return r["loopback"], asn
+    for i, (ri, r) in enumerate(as_data["routers"].items()):
+        # Add hostname (as:router_id) and computed loopback from loopback_space
+        router = {
+            "hostname": f"{as_number}:{ri}",
+            "loopback": {
+                "ipv6": str(ipaddress.IPv6Network(as_data["loopback_space"])[0] + i + 1)
+            },
+        }
 
-    raise LookupError("The corresponding router was not found")
+        # Add interfaces
+        interfaces = []
+        for int_name, int_data in r["interfaces"].items():
+            interface = __process_interface__(int_name, int_data, igp)
+            interfaces.append(interface)
+
+        router["interfaces"] = interfaces
+
+        # Add ospf config if it is enabled
+        if igp == "ospf":
+            router["ospf"] = {"router_id": ri}
+
+        routers.append(router)
+
+
+def __process_interface__(int_name, int_data, igp) -> dict:
+    interface = {
+        "name": int_name,
+        "ipv6_enable": True,
+        "ospf_area": int_data.get("ospf_area", 0),
+        "rip_enable": igp == "rip",
+        "ipv6_addresses": int_data["addresses"],
+    }
+
+    return interface
 
 
 def main():
     import step1
 
-    routers = step1.main()
-    step2(routers, verbose=True)
-    pprint.pprint(routers)
+    data = step1.main()
+    routers = step2(data, True)
+    pprint(routers)
     return routers
 
 

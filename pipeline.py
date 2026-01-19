@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 
 import argparse
+import yaml
 from pprint import pprint
 from src.step1 import step1
 from src.step2 import step2
+from src.step3 import step3
 from src.ecriture import ecriture_config
 from src.config_to_gns3 import export_config
 
 
 def print_help():
     print(
-        "Usage: python pipeline.py [-f FILE | --file FILE] [-h | --help] [-v | --verbose]"
+        "Usage: python pipeline.py [-f FILE | --file FILE] [-h | --help] [-v | --verbose] [-n | --dry-run]"
     )
     print("Generate Cisco router configs from YAML configuration file.")
     print()
@@ -20,10 +22,12 @@ def print_help():
     )
     print("  -h, --help         Show this help message and exit")
     print("  -v, --verbose     Show logs as the pipeline is executed")
+    print("  -n, --dry-run     Run all steps without writing output files")
     print()
     print("Examples:")
     print("  python pipeline.py")
     print("  python pipeline.py -f my_config.yaml")
+    print("  python pipeline.py --dry-run")
     print("  python pipeline.py --help")
 
 
@@ -39,6 +43,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "-v", "--verbose", action="store_true", help="Enable verbose output"
     )
+    parser.add_argument(
+        "-n",
+        "--dry-run",
+        action="store_true",
+        help="Run all steps without writing output files",
+    )
     args = parser.parse_args()
 
     if args.help:
@@ -47,15 +57,28 @@ if __name__ == "__main__":
 
     file_path: str = args.file
     verbose: bool = args.verbose
+    dry_run: bool = args.dry_run
+
+    # Load YAML configuration
+    with open(file_path, "r") as f:
+        config_data = yaml.safe_load(f)
 
     # Start pipeline
-    # Step 1 : Read file and create list of routers
-    # Step 2 : Rsolve BGP data
-    # ecriture_config : write data to .cfg files
-    # export config : export config files to gns3 router's startup config
+    # Step 1 : Assign networks to interfaces without addresses
+    # Step 2 : Create list of routers from config data
+    # Step 3 : Resolve BGP data
+    # Step 4 : Configure iBGP
+    # Step 5 : Write config files for each router
 
-    routers = step1(file_path, verbose)
-    if verbose:
+    step1(config_data, verbose)  # Pass empty list, step2 modifies config_data
+    routers = step2(config_data, verbose)
+    routers = step3(config_data, routers, verbose)
+
+    # Step 4 : only if --dry-run flag is unset
+    if not dry_run:
+        ecriture_config(routers, verbose)
+
+    if dry_run and not verbose:
         pprint(routers)
     ecriture_config(routers, verbose)
     export_config(verbose)
