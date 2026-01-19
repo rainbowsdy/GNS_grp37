@@ -20,9 +20,10 @@ def print_help():
     print(
         "  -f, --file FILE    Specify the YAML config file (default: templates/example.yaml)"
     )
-    print("  -h, --help         Show this help message and exit")
-    print("  -v, --verbose     Show logs as the pipeline is executed")
-    print("  -n, --dry-run     Run all steps without writing output files")
+    print("  -h, --help         |Show this help message and exit")
+    print("  -v, --verbose      |Show logs as the pipeline is executed")
+    print("  -n, --dry-run      |Run all steps without writing output files")
+    print("  -p, --project-name |Specify the gns3 project name (default : 'untitled') ")
     print()
     print("Examples:")
     print("  python pipeline.py")
@@ -49,6 +50,9 @@ if __name__ == "__main__":
         action="store_true",
         help="Run all steps without writing output files",
     )
+    parser.add_argument(
+        "-p", "--project-name", default="untitled", help="Le nom du projet ouvert dans GNS3"
+    )
     args = parser.parse_args()
 
     if args.help:
@@ -58,6 +62,7 @@ if __name__ == "__main__":
     file_path: str = args.file
     verbose: bool = args.verbose
     dry_run: bool = args.dry_run
+    project_name: str = args.project_name
 
     # Load YAML configuration
     with open(file_path, "r") as f:
@@ -77,8 +82,7 @@ if __name__ == "__main__":
     # Step 4 : only if --dry-run flag is unset
     if not dry_run:
         ecriture_config(routers, verbose)
+        export_config(verbose,project_name)
 
     if dry_run and not verbose:
         pprint(routers)
-    ecriture_config(routers, verbose)
-    export_config(verbose)

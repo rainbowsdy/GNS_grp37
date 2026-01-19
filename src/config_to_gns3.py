@@ -2,12 +2,12 @@ import os
 from gns3fy import Gns3Connector, Project
 from netmiko import ConnectHandler
 
-def export_config(verbose):
+def export_config(verbose,project_name):
     # ==============================
     # PARAMÈTRES
     # ==============================
     GNS3_URL = "http://localhost:3080"
-    PROJECT_NAME = "untitled"
+    PROJECT_NAME = project_name
     CONFIG_DIR = "output"
 
 

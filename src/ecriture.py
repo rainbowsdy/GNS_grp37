@@ -23,7 +23,7 @@ def ecriture_config(routers_for_template, verbose):
         )  # [0] est l'AS , [1] est le nom du routeur
 
         filename = f"{emplacement[1]}.cfg"
-        filepath = os.path.join(OUTPUT_DIR, emplacement[0])
+        filepath = OUTPUT_DIR
         os.makedirs(filepath, exist_ok=True)
         filepath = os.path.join(filepath, filename)
 
