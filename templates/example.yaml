@@ -8,7 +8,7 @@
       interfaces:
           GigabitEthernet0/0:
             neighbour: "112:R3" # If same as, as number not required.
-            bgp: peer # peer|client|provider|none, default is none
+            bgp: peer # peer | client | provider | none, default is none
           GigabitEthernet0/1:
             neighbour: "R2"
     R2:
@@ -23,7 +23,6 @@
 
 112:
   igp: "rip"
-  bgp_strategy: null
   loopback_space: "2001:1:1:2::/64"
   networks_space: "2001:db8:2::/48"
   routers:

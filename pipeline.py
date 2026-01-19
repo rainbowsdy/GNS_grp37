@@ -69,8 +69,8 @@ if __name__ == "__main__":
     # Step 4 : Configure iBGP
     # Step 5 : Write config files for each router
 
-    routers = step2(config_data, [], verbose)  # Pass empty list, step2 modifies config_data
-    routers = step1(config_data, verbose)
+    step1(config_data, verbose)  # Pass empty list, step2 modifies config_data
+    routers = step2(config_data, verbose)
     routers = step3(routers, verbose)
 
     # Step 4 : only if --dry-run flag is unset
