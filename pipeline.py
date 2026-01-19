@@ -5,6 +5,7 @@ from pprint import pprint
 from src.step1 import step1
 from src.step2 import step2
 from src.ecriture import ecriture_config
+from src.config_to_gns3 import export_config
 
 
 def print_help():
@@ -50,9 +51,11 @@ if __name__ == "__main__":
     # Start pipeline
     # Step 1 : Read file and create list of routers
     # Step 2 : Rsolve BGP data
+    # ecriture_config : write data to .cfg files
+    # export config : export config files to gns3 router's startup config
 
     routers = step1(file_path, verbose)
-    ecriture_config(routers, verbose)
-
     if verbose:
         pprint(routers)
+    ecriture_config(routers, verbose)
+    export_config(verbose)

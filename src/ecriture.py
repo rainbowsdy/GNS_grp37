@@ -31,4 +31,4 @@ def ecriture_config(routers_for_template, verbose):
             f.write(config + "\n")
 
         if verbose:
-            print(f"Configuration générée : {filepath} \n\n")
+            print(f"Configuration générée : {filepath}")

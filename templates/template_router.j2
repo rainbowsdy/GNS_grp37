@@ -74,7 +74,7 @@ router bgp {{ bgp.as }}
  bgp log-neighbor-changes
  no bgp default ipv4-unicast
  {% for n in bgp.neighbours %}
- neighbor {{ n.address.ipv6 }} remote-as {{ n.remote_as }}*
+ neighbor {{ n.address.ipv6 }} remote-as {{ n.remote_as }}
  neighbor {{ n.address.ipv6 }} update-source Loopback0
  {% endfor %}
  !
