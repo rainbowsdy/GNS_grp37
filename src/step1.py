@@ -104,6 +104,10 @@ def main():
     with open("templates/example.yaml", "r") as f:
         data = yaml.safe_load(f)
 
+    if "ASs" in data:
+        data = data["ASs"]
+    data = {int(k): v for k, v in data.items()}
+
     step1(data, verbose=True)
     return data
 

@@ -90,6 +90,7 @@ Une interface est configurée de la façon suivante:
 ```yaml
 GigabitEthernet0/0:
  neighbour: "[as_number:](router_id)" # as_number optionnel si le routeur est dans le même AS
+ ospf_metric: 100 # Doit match celle du neighbour (ou être définie à un seul endroit). Valide si ibgp est ospf
  bgp: "(none|peer|client|provider)" # optionnel, none par défaut
  addresses: # Spécifie une liste d'adresses IPv6 (optionnel - généré automatiquement si absent, à condition de spécifier networks_space plus haut)
   - "2001::1/64"

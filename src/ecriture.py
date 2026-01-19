@@ -13,6 +13,11 @@ def ecriture_config(routers_for_template, verbose):
     env = Environment(
         loader=FileSystemLoader(TEMPLATE_DIR), trim_blocks=True, lstrip_blocks=True
     )
+
+    if verbose:
+        print("\n#Step 5:")
+        print("Ecriture des configs")
+
     # Config par routeur
     template = env.get_template("template_router.j2")
     for router in routers_for_template:
@@ -31,4 +36,4 @@ def ecriture_config(routers_for_template, verbose):
             f.write(config + "\n")
 
         if verbose:
-            print(f"Configuration générée : {filepath}")
+            print(f"Configuration générée: {filepath}")
