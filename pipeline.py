@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 import argparse
+import yaml
 from pprint import pprint
 from src.step1 import step1
 from src.step2 import step2
+from src.step3 import step3
 from src.ecriture import ecriture_config
 
 
@@ -56,13 +58,20 @@ if __name__ == "__main__":
     verbose: bool = args.verbose
     dry_run: bool = args.dry_run
 
-    # Start pipeline
-    # Step 1 : Read file and create list of routers
-    # Step 2 : Resolve BGP data
-    # Step 3 : Configure iBGP
-    # Step 4 : Write config files for each router
+    # Load YAML configuration
+    with open(file_path, "r") as f:
+        config_data = yaml.safe_load(f)
 
-    routers = step1(file_path, verbose)
+    # Start pipeline
+    # Step 1 : Assign networks to interfaces without addresses
+    # Step 2 : Create list of routers from config data
+    # Step 3 : Resolve BGP data
+    # Step 4 : Configure iBGP
+    # Step 5 : Write config files for each router
+
+    routers = step2(config_data, [], verbose)  # Pass empty list, step2 modifies config_data
+    routers = step1(config_data, verbose)
+    routers = step3(routers, verbose)
 
     # Step 4 : only if --dry-run flag is unset
     if not dry_run:

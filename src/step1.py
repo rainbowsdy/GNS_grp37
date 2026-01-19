@@ -5,24 +5,22 @@ import ipaddress
 from pprint import pprint
 
 
-# Parse yaml config file and transfrom it to match the output structure
-def step1(filepath: str, verbose: bool = False) -> list:
+# Parse yaml config data and transform it to match the output structure
+def step1(data: dict, verbose: bool = False) -> list:
     routers = []
 
-    with open(filepath, "r") as f:
-        data = yaml.safe_load(f)
-        if verbose:
-            print("#STEP 1: ")
-            pprint(f"Reading from config: {data}")
+    if verbose:
+        print("#STEP 1: ")
+        pprint(f"Processing config: {data}")
 
-        if "ASs" in data:
-            data = data["ASs"]
+    if "ASs" in data:
+        data = data["ASs"]
 
-        for an, a in data.items():
-            __process_as__(routers, an, a)
+    for an, a in data.items():
+        __process_as__(routers, an, a)
 
-        if verbose:
-            print("Data parsed successfully")
+    if verbose:
+        print("Data parsed successfully")
     return routers
 
 
@@ -73,7 +71,9 @@ def __process_interface__(int_name, int_data, igp) -> dict:
 
 
 def main():
-    routers = step1("templates/example.yaml", True)
+    with open("templates/example.yaml", "r") as f:
+        data = yaml.safe_load(f)
+    routers = step1(data, True)
     pprint(routers)
     return routers
 

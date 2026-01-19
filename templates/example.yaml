@@ -3,14 +3,13 @@ ASs:
     igp: "ospf" # ospf | ibgp | rip
     bgp_strategy: null # We'll see about this one later
     loopback_space: "2001:1:1:1::/64"
+    networks_space: "2001:db8:1::/48" # Makes addresses field non-mandatory. If referencing another AS, current space will be chosen
     routers:
       R1:
         interfaces:
           GigabitEthernet0/0:
             neighbour: "112:R3" # If same as, as number not required.
             bgp: peer # peer|client|provider|none, default is none
-            addresses:
-              - "2001::1/64"
       R2:
         interfaces:
           GigabitEthernet0/0:
@@ -23,14 +22,13 @@ ASs:
     igp: "rip"
     bgp_strategy: null
     loopback_space: "2001:1:1:2::/64"
+    networks_space: "2001:db8:2::/48"
     routers:
       R3:
         interfaces:
           GigabitEthernet0/0:
             neighbour: "111:R1"
             bgp: peer
-            addresses:
-              - "2001::3/64"
       R4:
         interfaces:
           GigabitEthernet0/0:
