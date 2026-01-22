@@ -51,7 +51,9 @@ interface {{ iface.name }}
  {# ---------- OSPFv3 ---------- #}
  {% if iface.ospf_area is defined %}
  ipv6 ospf 1 area {{ iface.ospf_area }}
- ipv6 ospf cost {{ iface.ospf_cost }}
+ {% endif %}
+ {% if iface.ospf_metric is defined %}
+ ipv6 ospf cost {{ iface.ospf_metric }}
  {% endif %}
  {# ---------- RIPng ---------- #}
  {% if iface.rip_enable %}

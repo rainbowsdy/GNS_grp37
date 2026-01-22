@@ -27,7 +27,7 @@
           bgp: peer
 
 112:
-  igp: "rip"
+  igp: "ibgp"
   loopback_space: "2001:1:1:2::/64"
   networks_space: "2001:db8:2::/48"
   routers:

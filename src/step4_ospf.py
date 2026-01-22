@@ -8,8 +8,6 @@ def step4_ospf(data: dict, routers: list, verbose: bool = False):
         print("\n#STEP 4:")
         print("Processing OSPF metrics")
 
-
-
     for as_number, as_data in data.items():
         if as_data.get("igp") != "ospf":
             continue
@@ -36,7 +34,9 @@ def step4_ospf(data: dict, routers: list, verbose: bool = False):
                 current_hostname = f"{as_number}:{router_id}"
                 neighbour_metric = None
                 neighbour_int_name = None
-                for n_int_name, n_int_data in neighbour_router_data["interfaces"].items():
+                for n_int_name, n_int_data in neighbour_router_data[
+                    "interfaces"
+                ].items():
                     n_neighbour = n_int_data["neighbour"]
                     if ":" not in n_neighbour:
                         n_neighbour = f"{neighbour_as}:{n_neighbour}"
@@ -72,7 +72,8 @@ def step4_ospf(data: dict, routers: list, verbose: bool = False):
                     for i in current_router["interfaces"]
                     if i["name"] == interface_name
                 )
-                current_interface["ospf_metric"] = metric_to_set
+                if "bgp" not in current_router:
+                    current_interface["ospf_metric"] = metric_to_set
 
                 # Find neighbour router
                 neighbour_router = next(
@@ -81,9 +82,28 @@ def step4_ospf(data: dict, routers: list, verbose: bool = False):
                 neighbour_interface = next(
                     i
                     for i in neighbour_router["interfaces"]
-                    if (i["neighbour"] if ":" in i["neighbour"] else f"{neighbour_as}:{i['neighbour']}") == current_hostname
+                    if (
+                        i["neighbour"]
+                        if ":" in i["neighbour"]
+                        else f"{neighbour_as}:{i['neighbour']}"
+                    )
+                    == current_hostname
                 )
-                neighbour_interface["ospf_metric"] = metric_to_set
+                if "bgp" not in neighbour_router:
+                    neighbour_interface["ospf_metric"] = metric_to_set
+
+    # Add ospf_area to interfaces for routers without bgp in OSPF ASes
+    for router in routers:
+        if "bgp" in router:
+            continue
+        as_num, r_id = router["hostname"].split(":")
+        as_num = int(as_num)
+        if data[as_num].get("igp") == "ospf":
+            for interface in router["interfaces"]:
+                orig_int_data = data[as_num]["routers"][r_id]["interfaces"][
+                    interface["name"]
+                ]
+                interface["ospf_area"] = orig_int_data.get("ospf_area", 0)
 
     if verbose:
         print("OSPF metrics processed successfully")

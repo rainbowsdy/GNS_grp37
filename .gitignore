@@ -113,3 +113,7 @@ dmypy.json
 
 # Remove ouptput config
 output/
+
+# Editors
+.idea
+.vscode

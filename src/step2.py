@@ -59,7 +59,6 @@ def __process_interface__(int_name, int_data, igp) -> dict:
     interface = {
         "name": int_name,
         "ipv6_enable": True,
-        "ospf_area": int_data.get("ospf_area", 0),
         "rip_enable": igp == "rip",
         "ipv6_addresses": int_data["addresses"],
         "neighbour": int_data["neighbour"],
