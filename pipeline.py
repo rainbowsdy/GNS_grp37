@@ -6,6 +6,7 @@ from pprint import pprint
 from src.step1 import step1
 from src.step2 import step2
 from src.step3 import step3
+from src.step4_ospf import step4_ospf
 from src.ecriture import ecriture_config
 from src.config_to_gns3 import export_config
 
@@ -72,12 +73,13 @@ if __name__ == "__main__":
     # Step 1 : Assign networks to interfaces without addresses
     # Step 2 : Create list of routers from config data
     # Step 3 : Resolve BGP data
-    # Step 4 : Configure iBGP
+    # Step 4 : Configure IGP (OSPF or iBGP, RIP doesn't need any extra work)
     # Step 5 : Write config files for each router
 
     step1(config_data, verbose)  # Pass empty list, step2 modifies config_data
     routers = step2(config_data, verbose)
     routers = step3(config_data, routers, verbose)
+    routers = step4_ospf(config_data, routers, verbose)
 
     # Step 4 : only if --dry-run flag is unset
     if not dry_run:

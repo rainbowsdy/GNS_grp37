@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-import yaml
 import ipaddress
 from pprint import pprint
 
@@ -10,8 +9,8 @@ def step2(data: dict, verbose: bool = False) -> list:
     routers = []
 
     if verbose:
-        print("#STEP 2: ")
-        pprint(f"Processing config: {data}")
+        print("\n#STEP 2: ")
+        print("Processing config...")
 
     if "ASs" in data:
         data = data["ASs"]
@@ -63,6 +62,7 @@ def __process_interface__(int_name, int_data, igp) -> dict:
         "ospf_area": int_data.get("ospf_area", 0),
         "rip_enable": igp == "rip",
         "ipv6_addresses": int_data["addresses"],
+        "neighbour": int_data["neighbour"],
     }
 
     return interface

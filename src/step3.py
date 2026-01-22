@@ -6,11 +6,15 @@ import pprint
 # Add BGP configuration (yaml config left in each interface, as neighbour and bgp keys)
 def step3(data: dict, routers: list, verbose: bool = False):
     if verbose:
-        print("#STEP 3:")
+        print("\n#STEP 3:")
         print("Generating BGP config")
+
     bgp = __extract_bgp_config__(data)
     __apply_bgp_config__(routers, bgp)
     __resolve_neighbours_ips__(data, routers)
+
+    if verbose:
+        print("BGP config generated successfully")
 
     return routers
 
