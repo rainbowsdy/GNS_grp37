@@ -23,7 +23,7 @@ def print_help():
     print("  -h, --help             |Show this help message and exit")
     print("  -v, --verbose          |Show logs as the pipeline is executed")
     print("  -n, --dry-run          |Run all steps without writing output files")
-    print("  -p, --project-name NAME|Specify the gns3 project name (default : 'untitled') ")
+    print("  -p, --project-name NAME|Specify the gns3 project name")
     print()
     print("Examples:")
     print("  python pipeline.py")
