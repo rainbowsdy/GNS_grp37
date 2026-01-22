@@ -51,7 +51,7 @@ if __name__ == "__main__":
         help="Run all steps without writing output files",
     )
     parser.add_argument(
-        "-p", "--project-name", help="Le nom du projet ouvert dans GNS3"
+        "-p", "--project-name", help="Specify GNS3 project name"
     )
     args = parser.parse_args()
 
