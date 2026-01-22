@@ -52,7 +52,7 @@ if __name__ == "__main__":
         help="Run all steps without writing output files",
     )
     parser.add_argument(
-        "-p", "--project-name", default="untitled", help="Le nom du projet ouvert dans GNS3"
+        "-p", "--project-name", help="Le nom du projet ouvert dans GNS3"
     )
     args = parser.parse_args()
 
@@ -84,7 +84,8 @@ if __name__ == "__main__":
     # Step 4 : only if --dry-run flag is unset
     if not dry_run:
         ecriture_config(routers, verbose)
-        export_config(verbose,project_name)
+        if project_name is not None :
+            export_config(verbose,project_name)
 
     if dry_run and not verbose:
         pprint(routers)
