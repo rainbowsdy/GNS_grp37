@@ -53,7 +53,7 @@ On configure ensuite les paramètres suivants:
 
 ```yaml
 111:
- igp: "(ospf|rip)" # Applicable sur tout l'AS (obligatoire)
+ igp: "(ospf|rip|ibgp)" # Applicable sur tout l'AS (obligatoire)
  loopback_space: "2001::/64" # Espace d'adresses de loopback des routeurs (obligatoire)
  networks_space: "2001:db8::/48" # Espace pour générer automatiquement des sous-réseaux /126 (optionnel)
 ```
