@@ -88,6 +88,9 @@ router bgp {{ bgp.as }}
   {% for n in bgp.neighbours %}
   neighbor {{ n.address.ipv6 }} activate
   {% endfor %}
+  redistribute connected
+  redistribute rip
+  redistribute ospf 1
  exit-address-family
 !
 {% endif %}
