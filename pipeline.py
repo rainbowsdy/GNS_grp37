@@ -19,9 +19,7 @@ def print_help():
     print("Generate Cisco router configs from YAML configuration file.")
     print()
     print("Options:")
-    print(
-        "  -f, --file FILE    Specify the YAML config file (default: templates/example.yaml)"
-    )
+    print("  -f, --file FILE    |Specify the YAML config file (default: templates/example.yaml)")
     print("  -h, --help         |Show this help message and exit")
     print("  -v, --verbose      |Show logs as the pipeline is executed")
     print("  -n, --dry-run      |Run all steps without writing output files")

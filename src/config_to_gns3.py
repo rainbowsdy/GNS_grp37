@@ -1,6 +1,5 @@
 import os
 from gns3fy import Gns3Connector, Project
-from netmiko import ConnectHandler
 
 def export_config(verbose,project_name):
     # ==============================

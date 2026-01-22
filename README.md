@@ -13,6 +13,9 @@ Ce projet est un outil pour générer automatiquement des configurations de rout
 1. **Lecture et sérialisation** : Le fichier `pipeline.py` contient la fonction `read_config` qui parse le YAML et crée des objets AS et Router.
 2. **Étapes suivantes** : Traitement des données pour assigner des adresses IP, configurer les protocoles, etc.
 3. **Génération des configs** : Utilisation du template `templates/template_router.j2` pour créer les fichiers de config.
+4. **Export des configs vers GNS3** : Export des fichiers des configs vers un fichier GNS3 ouvert au préalable, et ou la structure physique du réseau est configuré.
+
+Des informations supplémentaires sont disponible a l'aide du flag `-h` ou `--help` .
 
 ## Installation
 
@@ -23,6 +26,12 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
+
+## Utilsation du programme
+Afin de générer des configurations pour un réseau il faut donc:
+1. Rédiger le fichier d'intention selon le format explicité plus bas.
+1. Éxecuter le fichier pipeline.py avec `-f CHEMIN_FICHIER` en argument. 
+1. (Optionel) Pour exporter les configurations, indiquer `-p NOM_PROJET_GNS3` a l'execution.
 
 ## Fichier d'intention
 
@@ -100,3 +109,5 @@ GigabitEthernet0/0:
 
 Si `addresses` n'est pas spécifié, le système génère automatiquement une adresse IPv6 dans un sous-réseau /126 à partir de `networks_space` de l'AS. Les deux interfaces connectées recevront des adresses dans le même sous-réseau.
 
+## Export de la config vers GNS3
+L'export est réalisé via gns3fy une bibliotheque qui permet, en se connectant a l'API GNS3, d'injecter directement les configurations générée en tant que startup config des routeurs.
