@@ -11,7 +11,7 @@ Ce projet est un outil pour générer automatiquement des configurations de rout
 ## Structure du Pipeline
 
 1. **Lecture et sérialisation** : Le fichier `pipeline.py` contient la fonction `read_config` qui parse le YAML et crée des objets AS et Router.
-2. **Étapes suivantes** : [À implémenter] Traitement des données pour assigner des adresses IP, configurer les protocoles, etc.
+2. **Étapes suivantes** : Traitement des données pour assigner des adresses IP, configurer les protocoles, etc.
 3. **Génération des configs** : Utilisation du template `templates/template_router.j2` pour créer les fichiers de config.
 
 ## Installation
@@ -70,6 +70,7 @@ Chaque AS contient plusieurs routeurs, indiqués par leurs ID:
   R2:
    ...
 ```
+Chaque routeur doit avoir un nom distinct.
 
 La configuration d'un routeur inclus une liste d'interfaces:
 
