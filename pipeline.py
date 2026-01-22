@@ -7,6 +7,7 @@ from src.step1 import step1
 from src.step2 import step2
 from src.step3 import step3
 from src.step4_ospf import step4_ospf
+from src.step4_ibgp import step4_ibgp
 from src.ecriture import ecriture_config
 from src.config_to_gns3 import export_config
 
@@ -80,6 +81,7 @@ if __name__ == "__main__":
     routers = step2(config_data, verbose)
     routers = step3(config_data, routers, verbose)
     routers = step4_ospf(config_data, routers, verbose)
+    routers = step4_ibgp(config_data, routers, verbose)
 
     # Step 4 : only if --dry-run flag is unset
     if not dry_run:

@@ -68,9 +68,9 @@ def __resolve_neighbours_ips__(data: dict, routers: list):
         for i in range(len(neighbours)):
             neighbour_as_number = neighbours[i].split(":")[0]
             neighbours[i] = {
-                "address": __resolve_neighbour_ip__(
+                "address": {"ipv6": __resolve_neighbour_ip__(
                     data, neighbours[i], current_router["hostname"]
-                )[0],  # Pick the first ip in the list
+                )[0]},  # Pick the first ip in the list
                 "remote_as": neighbour_as_number,
             }
 
