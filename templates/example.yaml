@@ -10,7 +10,7 @@
           GigabitEthernet0/0:
             neighbour: "112:R3" # If same as, as number not required.
             bgp: peer # peer | client | provider | none, default is none
-          GigabitEthernet0/1:
+          GigabitEthernet1/0:
             neighbour: "R2"
             ospf_metric: 200
     R2:
@@ -20,9 +20,9 @@
           bgp: peer
           addresses:
             - "2002::2/64"
-        GigabitEthernet0/1:
+        GigabitEthernet1/0:
           neighbour: "R1"
-        GigabitEthernet0/2:
+        GigabitEthernet2/0:
           neighbour: "112:R3"
           bgp: peer
 
@@ -36,7 +36,7 @@
         GigabitEthernet0/0:
           neighbour: "111:R1"
           bgp: peer
-        GigabitEthernet0/1:
+        GigabitEthernet1/0:
           neighbour: "111:R2"
           bgp: peer
     R4:

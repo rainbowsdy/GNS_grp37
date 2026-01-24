@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import pprint
+from pprint import pprint
 
 
 # Add BGP configuration (yaml config left in each interface, as neighbour and bgp keys)
@@ -94,9 +94,8 @@ def main():
     data = step1.main()
     routers = step2.main()
     step3(data, routers, verbose=True)
-    pprint.pprint(routers)
     return routers
 
 
 if __name__ == "__main__":
-    main()
+    pprint(main())

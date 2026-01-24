@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import ipaddress
+from pprint import pprint
 
 
 def step1(config_data: dict, verbose: bool = False):
@@ -113,4 +114,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    pprint(main())

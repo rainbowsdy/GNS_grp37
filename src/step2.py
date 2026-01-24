@@ -72,9 +72,8 @@ def main():
 
     data = step1.main()
     routers = step2(data, True)
-    pprint(routers)
     return routers
 
 
 if __name__ == "__main__":
-    main()
+    pprint(main())

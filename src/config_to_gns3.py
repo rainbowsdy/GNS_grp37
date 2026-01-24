@@ -65,7 +65,8 @@ def export_config(verbose,project_name):
 
             # Démarrage du node
             if verbose:
-                print(f"[+] Démarrage du routeur {node.name}")
+                print(f"[+] Redémarrage du routeur {node.name}")
+            node.stop()
             node.start()
 
         except Exception as e:
