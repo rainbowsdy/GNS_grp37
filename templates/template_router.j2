@@ -52,7 +52,7 @@ ip tcp synwait-time 5
 {# ================= LOOPBACK ================= #}
 {% if loopback is defined %}
 interface Loopback0
- ipv6 address {{ loopback.ipv6 }}
+ ipv6 address {{ loopback.ipv6 }}/128
  ipv6 enable
 !
 {% endif %}
@@ -106,7 +106,7 @@ router bgp {{ bgp.as }}
  {% endfor %}
  !
  address-family ipv4
- exit-address-family
+ exit
  !
  address-family ipv6
   {% for net in bgp.networks %}
@@ -118,7 +118,7 @@ router bgp {{ bgp.as }}
   redistribute connected
   redistribute rip
   redistribute ospf 1
- exit-address-family
+ exit
 !
 {% endif %}
 !
