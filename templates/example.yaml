@@ -5,44 +5,50 @@
   networks_space: "2001:db8:1::/48" # Makes addresses field non-mandatory. If referencing another AS, current space will be chosen
   routers:
     R1:
-      ospf_area: 0 # 0 by default
       interfaces:
         GigabitEthernet0/0:
-          neighbour: "112:R3" # If same as, as number not required.
-          bgp: peer # peer | client | provider | none, default is none
-        GigabitEthernet1/0:
-          neighbour: "R2"
-          ospf_metric: 200
-    R2:
-      interfaces:
-        GigabitEthernet0/0:
-          neighbour: "112:R4"
+          neighbour: "112:R2"
           bgp: peer
-          addresses:
-            - "2002::2/64"
         GigabitEthernet1/0:
+          neighbour: "R4"
+    R4:
+      interfaces:
+        GigabitEthernet0/0:
           neighbour: "R1"
-        GigabitEthernet2/0:
-          neighbour: "112:R3"
-          bgp: peer
-
+          ospf_metric: 200
+        GigabitEthernet1/0:
+          neighbour: "R5"
+          ospf_metric: 10
+    R5:
+      interfaces:
+        GigabitEthernet0/0:
+          neighbour: "R4"
 112:
   igp: "ibgp"
   loopback_space: "2001:1:1:2::/64"
   networks_space: "2001:db8:2::/48"
   routers:
-    R3:
+    R2:
       interfaces:
         GigabitEthernet0/0:
           neighbour: "111:R1"
           bgp: peer
         GigabitEthernet1/0:
-          neighbour: "111:R2"
+          neighbour: "113:R3"
           bgp: peer
-    R4:
+113:
+  igp: "ibgp"
+  loopback_space: "2001:1:1:3::/64"
+  networks_space: "2001:db8:3::/48"
+  routers:
+    R3:
       interfaces:
         GigabitEthernet0/0:
-          neighbour: "111:R2"
+          neighbour: "112:R2"
           bgp: peer
-          addresses:
-            - "2002::4/64"
+        GigabitEthernet1/0:
+          neighbour: "R6"
+    R6:
+      interfaces:
+        GigabitEthernet0/0:
+          neighbour: "R3"

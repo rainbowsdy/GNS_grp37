@@ -8,7 +8,7 @@ def step4_ospf(data: dict, routers: list, verbose: bool = False):
         print("Processing OSPF metrics")
 
     for as_number, as_data in data.items():
-        if as_data.get("igp") != "ospf":
+        if as_data.get("igp") not in ["ospf", "ibgp"]:
             continue
 
         if verbose:
@@ -93,11 +93,9 @@ def step4_ospf(data: dict, routers: list, verbose: bool = False):
 
     # Add ospf_area to interfaces for routers without bgp in OSPF ASes
     for router in routers:
-        if "bgp" in router:
-            continue
         as_num, r_id = router["hostname"].split(":")
         as_num = int(as_num)
-        if data[as_num].get("igp") == "ospf":
+        if data[as_num].get("igp") in ["ospf", "ibgp"]:
             for interface in router["interfaces"]:
                 orig_int_data = data[as_num]["routers"][r_id]["interfaces"][
                     interface["name"]
