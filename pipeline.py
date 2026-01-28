@@ -68,7 +68,8 @@ if __name__ == "__main__":
         config_data = yaml.safe_load(f)
     
     first_key = list(config_data.keys())[0]
-    if first_key.lower() == "ass":
+    
+    if ((type(first_key) == str) and (first_key.lower() == "ass")):
         config_data = config_data[first_key]
 
     # Start pipeline
