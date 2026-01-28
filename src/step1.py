@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import ipaddress
 from pprint import pprint
 

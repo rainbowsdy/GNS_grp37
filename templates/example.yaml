@@ -7,12 +7,12 @@
     R1:
       ospf_area: 0 # 0 by default
       interfaces:
-          GigabitEthernet0/0:
-            neighbour: "112:R3" # If same as, as number not required.
-            bgp: peer # peer | client | provider | none, default is none
-          GigabitEthernet1/0:
-            neighbour: "R2"
-            ospf_metric: 200
+        GigabitEthernet0/0:
+          neighbour: "112:R3" # If same as, as number not required.
+          bgp: peer # peer | client | provider | none, default is none
+        GigabitEthernet1/0:
+          neighbour: "R2"
+          ospf_metric: 200
     R2:
       interfaces:
         GigabitEthernet0/0:
