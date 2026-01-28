@@ -1,31 +1,31 @@
 ASs:
- 111:
-  igp: "ospf"
-  loopback_space: "2001::/64" 
-  networks_space: "2001:db8::/48"
-  routers:
-    R1:
-      ospf_area: 0 
-      interfaces:
-        GigabitEthernet0/0:
-          neighbour: "112:R3"
-          ospf_metric: 100 
-          bgp: "peer" 
-        GigabitEthernet1/0:
-          neighbour: "111:R2"
-          ospf_metric: 100 
-          bgp: "none" 
-    R2:
-      ospf_area: 0
-      interfaces:
-        GigabitEthernet0/0:
-        neighbour: "111:R1"
-        ospf_metric: 100 
-        bgp: "none" 
+  111:
+    igp: "ospf"
+    loopback_space: "2001:0:0:0::/64" 
+    networks_space: "2001:db8:0::/48"
+    routers:
+      R1:
+        ospf_area: 0 
+        interfaces:
+          GigabitEthernet0/0:
+            neighbour: "112:R3"
+            ospf_metric: 100 
+            bgp: "peer"
+          GigabitEthernet1/0:
+            neighbour: "111:R2"
+            ospf_metric: 100 
+            bgp: "none" 
+      R2:
+        ospf_area: 0
+        interfaces:
+          GigabitEthernet0/0:
+            neighbour: "111:R1"
+            ospf_metric: 100 
+            bgp: "none" 
   112:
     igp: "rip"
-    loopback_space: "2002::/64" 
-    networks_space: "2001:db9::/48"
+    loopback_space: "2002:0:0:0::/64" 
+    networks_space: "2001:db9:0::/48"
     routers:
       R3:
         interfaces:
@@ -38,7 +38,7 @@ ASs:
             ospf_metric: 100 
             bgp: "none" 
       R4:
-        interfaces :
+        interfaces:
           GigabitEthernet0/0:
             neighbour: "112:R3"
             ospf_metric: 100 

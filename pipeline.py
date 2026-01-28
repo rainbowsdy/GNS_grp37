@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import argparse
 import yaml
 from pprint import pprint
@@ -67,6 +66,10 @@ if __name__ == "__main__":
     # Load YAML configuration
     with open(file_path, "r") as f:
         config_data = yaml.safe_load(f)
+    
+    first_key = list(config_data.keys())[0]
+    if first_key.lower() == "ass":
+        config_data = config_data[first_key]
 
     # Start pipeline
     # Step 1 : Assign networks to interfaces without addresses

@@ -116,8 +116,6 @@ router bgp {{ bgp.as }}
   neighbor {{ n.address.ipv6.split('/')[0] }} activate
   {% endfor %}
   redistribute connected
-  redistribute rip
-  redistribute ospf 1
  exit
 !
 {% endif %}

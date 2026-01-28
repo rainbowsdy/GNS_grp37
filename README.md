@@ -13,7 +13,7 @@ Ce projet est un outil pour générer automatiquement des configurations de rout
 1. **Lecture et sérialisation** : Le fichier `pipeline.py` contient la fonction `read_config` qui parse le YAML et crée des objets AS et Router.
 2. **Étapes suivantes** : Traitement des données pour assigner des adresses IP, configurer les protocoles, etc.
 3. **Génération des configs** : Utilisation du template `templates/template_router.j2` pour créer les fichiers de config.
-4. **Export des configs vers GNS3** : Export des fichiers des configs vers un fichier GNS3 ouvert au préalable, et ou la structure physique du réseau est configuré.
+4. **Export des configs vers GNS3** : Export des fichiers des configs vers un fichier GNS3 ouvert au préalable, et/ou la structure physique du réseau est configuré.
 
 Des informations supplémentaires sont disponible a l'aide du flag `-h` ou `--help` .
 
@@ -27,11 +27,11 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Utilsation du programme
-Afin de générer des configurations pour un réseau il faut donc:
+## Utilisation du programme
+Afin de générer des configurations pour un réseau, il faut donc :
 1. Rédiger le fichier d'intention selon le format explicité plus bas.
-1. Éxecuter le fichier pipeline.py avec `-f CHEMIN_FICHIER` en argument. 
-1. (Optionel) Pour exporter les configurations, indiquer `-p NOM_PROJET_GNS3` a l'execution.
+1. Exécuter le fichier pipeline.py avec `-f CHEMIN_FICHIER` en argument. 
+1. (Optionnel) Pour exporter les configurations, indiquer `-p NOM_PROJET_GNS3` a l'exécution.
 
 ## Fichier d'intention
 
@@ -39,7 +39,7 @@ Vous pouvez trouver un exemple complet dans `templates/example.yaml`, avec une d
 
 ### AS
 
-Le fichier est organisé par AS de la façcon suivante:
+Le fichier est organisé par AS de la façon suivante :
 
 ```yaml
 ASs:
@@ -49,7 +49,7 @@ ASs:
   ...
 ```
 
-*A noter que l'en-tête `ASs` n'est pas obligatoire:*
+*À noter que l'en-tête `ASs` n'est pas obligatoire :*
 
 ```yaml
 111:
@@ -58,7 +58,7 @@ ASs:
  ...
 ```
 
-On configure ensuite les paramètres suivants:
+On configure ensuite les paramètres suivants :
 
 ```yaml
 111:
@@ -69,7 +69,7 @@ On configure ensuite les paramètres suivants:
 
 ### Routeurs
 
-Chaque AS contient plusieurs routeurs, indiqués par leurs ID:
+Chaque AS contient plusieurs routeurs, indiqués par leurs ID :
 
 ```yaml
 111:
@@ -81,11 +81,11 @@ Chaque AS contient plusieurs routeurs, indiqués par leurs ID:
 ```
 Chaque routeur doit avoir un nom distinct.
 
-La configuration d'un routeur inclus une liste d'interfaces:
+La configuration d'un routeur inclus une liste d'interfaces :
 
 ```yaml
 R1:
- ospf_area: 0 # Valide si igp est ospf, vaut 0 par défaut
+ ospf_area: 0 # Valide si igp est OSPF, vaut 0 par défaut
  interfaces:
   GigabitEthernet0/0:
    ...
@@ -95,12 +95,12 @@ R1:
 
 ### Interfaces
 
-Une interface est configurée de la façon suivante:
+Une interface est configurée de la façon suivante :
 
 ```yaml
 GigabitEthernet0/0:
  neighbour: "[as_number:](router_id)" # as_number optionnel si le routeur est dans le même AS
- ospf_metric: 100 # Doit match celle du neighbour (ou être définie à un seul endroit). Valide si igp est ospf
+ ospf_metric: 100 # Doit match celle du neighbour (ou être définie à un seul endroit). Valide si igp est OSPF
  bgp: "(none|peer|client|provider)" # optionnel, none par défaut
  addresses: # Spécifie une liste d'adresses IPv6 (optionnel - généré automatiquement si absent, à condition de spécifier networks_space plus haut)
   - "2001::1/64"
@@ -110,4 +110,4 @@ GigabitEthernet0/0:
 Si `addresses` n'est pas spécifié, le système génère automatiquement une adresse IPv6 dans un sous-réseau /126 à partir de `networks_space` de l'AS. Les deux interfaces connectées recevront des adresses dans le même sous-réseau.
 
 ## Export de la config vers GNS3
-L'export est réalisé via gns3fy une bibliotheque qui permet, en se connectant a l'API GNS3, d'injecter directement les configurations générée en tant que startup config des routeurs.
+L'export est réalisé via gns3fy une bibliothèque qui permet, en se connectant à l'API GNS3, d'injecter directement les configurations générées en tant que startup config des routeurs.
