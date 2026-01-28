@@ -102,7 +102,9 @@ router bgp {{ bgp.as }}
  no bgp default ipv4-unicast
  {% for n in bgp.neighbours %}
  neighbor {{ n.address.ipv6.split('/')[0] }} remote-as {{ n.remote_as }}
+ {% if n.remote_as == bgp.as %}
  neighbor {{ n.address.ipv6.split('/')[0] }} update-source Loopback0
+ {% endif %}
  {% endfor %}
  !
  address-family ipv4
