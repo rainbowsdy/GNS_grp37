@@ -82,11 +82,14 @@ interface {{ iface.name }}
  ipv6 address {{ iface.ipv6_addresses.ipv6 }}
  {% endif %}
  {# ---------- OSPFv3 ---------- #}
+ {% if iface.neighbour is defined
+   and not ':' in iface.neighbour %}
  {% if iface.ospf_area is defined %}
  ipv6 ospf 1 area {{ iface.ospf_area }}
  {% endif %}
  {% if iface.ospf_metric is defined %}
  ipv6 ospf cost {{ iface.ospf_metric }}
+ {% endif %}
  {% endif %}
  {# ---------- RIPng ---------- #}
  {% if iface.rip_enable %}
