@@ -85,7 +85,7 @@ if __name__ == "__main__":
     routers = step4_ospf(config_data, routers, verbose)
     routers = step4_ibgp(config_data, routers, verbose)
 
-    # Step 4 : only if --dry-run flag is unset
+    # Step 5 : only if --dry-run flag is unset
     if not dry_run:
         ecriture_config(routers, verbose)
         if project_name is not None :
