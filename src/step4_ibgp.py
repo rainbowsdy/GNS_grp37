@@ -47,6 +47,12 @@ def step4_ibgp(data: dict, routers: list, verbose: bool = False):
                 }
                 if neighbour not in current_router["bgp"]["neighbours"]:
                     current_router["bgp"]["neighbours"].append(neighbour)
+                    
+            # Add next-hop-self to border routers
+            remote_ass = [n["remote_as"] for n in current_router["bgp"]["neighbours"]]
+            current_as = current_router["hostname"].split(":")[0]
+            if current_as in remote_ass and len(remote_ass) > 1:
+                current_router["bgp"]["next_hop_self"] = True
 
     if verbose:
         print("iBGP configured successfully")
@@ -66,7 +72,7 @@ def main():
     data = step1.main()
     routers = step3.main()
     routers = step4_ibgp(data, routers, True)
-    pprint(routers)
+    #pprint(routers)
     return routers
 
 
