@@ -54,6 +54,15 @@ ip tcp synwait-time 5
 interface Loopback0
  ipv6 address {{ loopback.ipv6 }}/128
  ipv6 enable
+ {% set ns = namespace(ospf_done=false) %}
+ {% set ospf_done = false %}
+ {% for iface in interfaces %}
+  {% if iface.ospf_area is defined and not ns.ospf_done %}
+ ipv6 ospf 1 area {{ iface.ospf_area }}
+    {% set ns.ospf_done = true %}
+  {% endif %}
+{% endfor %}
+
 !
 {% endif %}
 !
@@ -88,7 +97,7 @@ interface {{ iface.name }}
 !
 !
 {# ================= OSPFv3 GLOBAL ================= #}
-{% if ospf is defined %}
+{% if ospf is defined or ns.ospf_done %}
 ipv6 router ospf 1
  router-id 1.1.1.{{ hostname.split(':')[-1][1:] }}
 {% endif %}
